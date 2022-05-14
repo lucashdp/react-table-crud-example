@@ -1,31 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { AiOutlineDelete } from "react-icons";
-
-const tutorialsMock = [
-  {
-    id: "1sadf918asdf918sad",
-    title: "React",
-    description: "O tutorial de React funciona assim ...",
-  },
-  {
-    id: "2sadf918asdf918sad",
-    title: "NodeJS",
-    description: "O tutorial de NodeJS funciona assim ...",
-  },
-  {
-    id: "3sadf918asdf918sad",
-    title: ".NET",
-    description: "O tutorial de .NET funciona assim ...",
-  },
-  {
-    id: "4sadf918asdf918sad",
-    title: "Angular",
-    description: "O tutorial de Angular funciona assim ...",
-  },
-];
+import { AiOutlineDelete } from "react-icons/ai";
+import useTutorialContext from "../contexts/useTutorialContext";
 
 const TutorialsList = () => {
+  const tutorialGlobalState = useTutorialContext();
+  const tutorialsMock = tutorialGlobalState.tutorialsList;
   const [tutorials, setTutorials] = useState([]);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     setTimeout(() => {
@@ -37,6 +18,23 @@ const TutorialsList = () => {
     setTutorials([]);
   };
 
+  const handleChange = (event) => {
+    setSearch(event.target.value);
+    setTutorials(
+      tutorialsMock.filter(
+        (tutorial) =>
+          tutorial.description.toLowerCase().includes(event.target.value) ||
+          tutorial.title.toLowerCase().includes(event.target.value)
+      )
+    );
+  };
+
+  const remove = (event) => {
+    setTutorials(
+      tutorials.filter((tutorial) => tutorial.id !== event.target.id)
+    );
+  };
+
   return (
     <div className="list row">
       <div className="col-md-8">
@@ -45,14 +43,17 @@ const TutorialsList = () => {
             type="text"
             className="form-control"
             placeholder="Search by title"
+            value={search}
+            onChange={handleChange}
           />
           <div className="input-group-append">
             <button className="btn btn-outline-secondary" type="button">
-              Search
+              Buscar
             </button>
           </div>
         </div>
       </div>
+      {search}
       <div className="col-md-12 list">
         <table className="table table-striped table-bordered">
           <thead>
@@ -66,7 +67,11 @@ const TutorialsList = () => {
                 <td>{tutorial.title}</td>
                 <td>{tutorial.description}</td>
                 <td>
-                  <AiOutlineDelete />
+                  <AiOutlineDelete
+                    id={tutorial.id}
+                    role="button"
+                    onClick={remove}
+                  />
                 </td>
               </tr>
             ))}
