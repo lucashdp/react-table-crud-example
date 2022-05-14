@@ -4,20 +4,15 @@ import "@fortawesome/fontawesome-free/css/all.css";
 import "@fortawesome/fontawesome-free/js/all.js";
 import "./App.css";
 
+import Router from "./routes"
+
+import Header from "./components/Header";
+
 function App() {
   return (
     <div>
-      <nav className="navbar navbar-expand navbar-dark bg-dark">
-        <a href="/tutorials" className="navbar-brand">
-          bezKoder
-        </a>
-        <div className="navbar-nav mr-auto">
-          <li className="nav-item">Tutorials</li>
-          <li className="nav-item">Add</li>
-        </div>
-      </nav>
-
-      <div className="container mt-3"></div>
+      <Header />
+      <Router />
     </div>
   );
 }
