@@ -34,9 +34,9 @@ export default function useTutorialContext() {
   return useContext(TutorialContext);
 }
 
-export function setTutorialContext(context) {
+export function setTutorialContext(arrayUpdated) {
   createContext({
     updatedDate: "19/04/2022",
-    tutorialsList: context,
+    tutorialsList: arrayUpdated,
   });
 }

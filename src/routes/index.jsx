@@ -1,5 +1,6 @@
 import React, { lazy, Suspense } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
+import ReactLoading from "react-loading";
 
 const EditBook = lazy(() => import("../screens/EditBook"));
 const BookList = lazy(() => import("../screens/BooksList"));
@@ -10,7 +11,7 @@ const AddTutorial = lazy(() => import("../screens/AddTutorial"));
 
 const AppRoutes = () => {
   return (
-    <Suspense fallback={<></>}>
+    <Suspense fallback={<ReactLoading type="Spin" height={667} width={375} />}>
       <Routes>
         <Route path="/books/edit/:bookId" exact element={<EditBook />} />
         <Route path="/books/add" exact element={<AddBook />} />

@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { AiOutlineDelete } from "react-icons/ai";
+import { FaEdit } from "react-icons/fa";
 import useTutorialContext from "../contexts/useTutorialContext";
+import { useNavigate } from "react-router-dom";
 
 const TutorialsList = () => {
   const tutorialGlobalState = useTutorialContext();
+  const navigate = useNavigate();
   const tutorialsMock = tutorialGlobalState.tutorialsList;
   const [tutorials, setTutorials] = useState([]);
   const [search, setSearch] = useState("");
@@ -29,10 +32,12 @@ const TutorialsList = () => {
     );
   };
 
-  const remove = (event) => {
-    setTutorials(
-      tutorials.filter((tutorial) => tutorial.id !== event.target.id)
-    );
+  const remove = (id) => {
+    setTutorials(tutorials.filter((tutorial) => tutorial.id !== id));
+  };
+
+  const edit = (id) => {
+    navigate(`/tutorials/edit/${id}`);
   };
 
   return (
@@ -53,7 +58,6 @@ const TutorialsList = () => {
           </div>
         </div>
       </div>
-      {search}
       <div className="col-md-12 list">
         <table className="table table-striped table-bordered">
           <thead>
@@ -67,11 +71,25 @@ const TutorialsList = () => {
                 <td>{tutorial.title}</td>
                 <td>{tutorial.description}</td>
                 <td>
-                  <AiOutlineDelete
-                    id={tutorial.id}
-                    role="button"
-                    onClick={remove}
-                  />
+                  <div style={{ display: "flex", flexDirection: "row" }}>
+                    <a
+                      href
+                      role="button"
+                      id={tutorial.id}
+                      onClick={() => remove(tutorial.id)}
+                    >
+                      <AiOutlineDelete />
+                    </a>
+                    <div style={{ paddingRight: "10px" }}></div>
+                    <a
+                      href
+                      role="button"
+                      id={tutorial.id}
+                      onClick={() => edit(tutorial.id)}
+                    >
+                      <FaEdit />
+                    </a>
+                  </div>
                 </td>
               </tr>
             ))}
