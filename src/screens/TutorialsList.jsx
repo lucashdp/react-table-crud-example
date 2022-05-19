@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { AiOutlineDelete } from "react-icons/ai";
 import { FaEdit } from "react-icons/fa";
-import useTutorialContext from "../contexts/useTutorialContext";
+import useTutorialContext, {
+  setTutorialContext,
+} from "../contexts/useTutorialContext";
 import { useNavigate } from "react-router-dom";
+import { getTutorials } from "../api";
 
 const TutorialsList = () => {
   const tutorialGlobalState = useTutorialContext();
@@ -12,9 +15,12 @@ const TutorialsList = () => {
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    setTimeout(() => {
-      setTutorials(tutorialsMock);
-    }, 1000);
+    const getTutorialsApi = async () => {
+      const tutorialsResult = await getTutorials();
+      setTutorialContext(tutorialsResult.data);
+      setTutorials(tutorialsResult.data);
+    };
+    getTutorialsApi();
   }, []);
 
   const removeAll = () => {
