@@ -1,24 +1,18 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import useTutorialContext, {
-  setTutorialContext,
-} from "../contexts/useTutorialContext";
-const shortid = require("shortid");
+
+import { createTutorials } from "../api";
 
 const AddTutorial = () => {
   const navigate = useNavigate();
-  const tutorialGlobalState = useTutorialContext();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
 
-  const save = () => {
-    const newTutorials = tutorialGlobalState.tutorialsList;
-    newTutorials.push({
-      id: shortid.generate(),
+  const save = async () => {
+    await createTutorials({
       title: title,
       description: description,
     });
-    setTutorialContext(newTutorials);
     navigate("/tutorials");
   };
 

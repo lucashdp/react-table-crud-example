@@ -1,36 +1,28 @@
 import React, { useEffect, useState } from "react";
 import { AiOutlineDelete } from "react-icons/ai";
 import { FaEdit } from "react-icons/fa";
-import useTutorialContext, {
-  setTutorialContext,
-} from "../contexts/useTutorialContext";
 import { useNavigate } from "react-router-dom";
-import { getTutorials } from "../api";
+import { getTutorials, deleteTutorialsById } from "../api";
 
 const TutorialsList = () => {
-  const tutorialGlobalState = useTutorialContext();
   const navigate = useNavigate();
-  const tutorialsMock = tutorialGlobalState.tutorialsList;
   const [tutorials, setTutorials] = useState([]);
+  const [tutorialsDefault, setTutorialsDefault] = useState([]);
   const [search, setSearch] = useState("");
 
   useEffect(() => {
     const getTutorialsApi = async () => {
       const tutorialsResult = await getTutorials();
-      setTutorialContext(tutorialsResult.data);
       setTutorials(tutorialsResult.data);
+      setTutorialsDefault(tutorialsResult.data);
     };
     getTutorialsApi();
   }, []);
 
-  const removeAll = () => {
-    setTutorials([]);
-  };
-
   const handleChange = (event) => {
     setSearch(event.target.value);
     setTutorials(
-      tutorialsMock.filter(
+      tutorialsDefault.filter(
         (tutorial) =>
           tutorial.description.toLowerCase().includes(event.target.value) ||
           tutorial.title.toLowerCase().includes(event.target.value)
@@ -38,8 +30,9 @@ const TutorialsList = () => {
     );
   };
 
-  const remove = (id) => {
-    setTutorials(tutorials.filter((tutorial) => tutorial.id !== id));
+  const remove = async (id) => {
+    await deleteTutorialsById(id);
+    setTutorials(tutorials.filter((tutorial) => tutorial._id !== id));
   };
 
   const edit = (id) => {
@@ -82,7 +75,7 @@ const TutorialsList = () => {
                       href
                       role="button"
                       id={tutorial.id}
-                      onClick={() => remove(tutorial.id)}
+                      onClick={() => remove(tutorial._id)}
                     >
                       <AiOutlineDelete />
                     </a>
@@ -91,7 +84,7 @@ const TutorialsList = () => {
                       href
                       role="button"
                       id={tutorial.id}
-                      onClick={() => edit(tutorial.id)}
+                      onClick={() => edit(tutorial._id)}
                     >
                       <FaEdit />
                     </a>
@@ -101,12 +94,6 @@ const TutorialsList = () => {
             ))}
           </tbody>
         </table>
-      </div>
-
-      <div className="col-md-8">
-        <button className="btn btn-sm btn-danger" onClick={removeAll}>
-          Remove All
-        </button>
       </div>
     </div>
   );

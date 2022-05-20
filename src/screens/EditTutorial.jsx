@@ -1,37 +1,38 @@
-import React, { useState } from "react";
-import useTutorialContext, {
-  setTutorialContext,
-} from "../contexts/useTutorialContext";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-const Tutorial = () => {
-  const tutorialGlobalState = useTutorialContext();
-  const navigate = useNavigate();
-  const tutorialsMock = tutorialGlobalState.tutorialsList;
-  const { tutorialId } = useParams();
-  const tutorialToEdit = tutorialsMock.filter(
-    (tutorial) => tutorial.id === tutorialId
-  )[0];
-  const [title, setTitle] = useState(tutorialToEdit.title);
-  const [description, setDescription] = useState(tutorialToEdit.description);
+import {
+  getTutorialsById,
+  updateTutorialsById,
+  deleteTutorialsById,
+} from "../api";
 
-  const update = () => {
-    let arrayEdited = tutorialsMock;
-    arrayEdited.map((tutorial) => {
-      if (tutorial.id === tutorialId) {
-        tutorial.title = title;
-        tutorial.description = description;
-      }
-      return tutorial;
-    });
-    setTutorialContext(arrayEdited);
+const Tutorial = () => {
+  const navigate = useNavigate();
+  const { tutorialId } = useParams();
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+
+  useEffect(() => {
+    const getTutorialsApi = async () => {
+      const tutorialsResult = await getTutorialsById(tutorialId);
+      setTitle(tutorialsResult.data.title);
+      setDescription(tutorialsResult.data.description);
+    };
+    getTutorialsApi();
+  }, []);
+
+  const update = async () => {
+    const tutorialToEdit = {
+      title: title,
+      description: description,
+    };
+    await updateTutorialsById(tutorialId, tutorialToEdit);
     navigate("/tutorials");
   };
 
-  const deleteTutorials = () => {
-    setTutorialContext(
-      tutorialsMock.filter((tutorial) => tutorial.id !== tutorialId)
-    );
+  const deleteTutorials = async () => {
+    await deleteTutorialsById(tutorialId);
     navigate("/tutorials");
   };
 
