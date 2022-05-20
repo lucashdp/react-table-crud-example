@@ -20,7 +20,7 @@ const Tutorial = () => {
       setDescription(tutorialsResult.data.description);
     };
     getTutorialsApi();
-  }, []);
+  }, [tutorialId]);
 
   const update = async () => {
     const tutorialToEdit = {
